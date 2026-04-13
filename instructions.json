@@ -1,0 +1,53 @@
+{
+  "task": "Update Laravel routing to support React SPA frontend",
+  "objective": "Ensure all frontend routes are handled by React instead of Laravel returning 404",
+  "framework": "Laravel 10",
+  "architecture": "React SPA + Laravel API",
+  "steps": [
+    {
+      "step": "Create fallback route",
+      "description": "Add a catch-all route to serve React app for all non-API routes",
+      "file": "routes/web.php",
+      "code": "Route::get('/{any}', function () {\n    return view('app');\n})->where('any', '.*');"
+    },
+    {
+      "step": "Create Blade view for React app",
+      "description": "Serve React build from Laravel",
+      "file": "resources/views/app.blade.php",
+      "code": "<!DOCTYPE html>\n<html>\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Maryam Burqa House</title>\n</head>\n<body>\n    <div id=\"root\"></div>\n    <script src=\"/build/assets/index.js\"></script>\n</body>\n</html>"
+    },
+    {
+      "step": "Keep API routes separate",
+      "description": "Ensure API routes remain functional",
+      "file": "routes/api.php",
+      "note": "All API endpoints must be prefixed with /api"
+    },
+    {
+      "step": "Build React app",
+      "description": "Generate production build",
+      "command": "npm run build"
+    },
+    {
+      "step": "Move build files",
+      "description": "Place React build inside Laravel public folder",
+      "target": "public/build"
+    },
+    {
+      "step": "Handle assets correctly",
+      "description": "Ensure correct asset paths",
+      "note": "Update script path if build folder changes"
+    },
+    {
+      "step": "Prevent API conflicts",
+      "description": "Exclude API routes from fallback",
+      "code": "Route::get('/{any}', function () {\n    return view('app');\n})->where('any', '^(?!api).*$');"
+    }
+  ],
+  "result": {
+    "behavior": [
+      "All frontend routes handled by React Router",
+      "Laravel serves React app for unknown routes",
+      "API endpoints still work normally"
+    ]
+  }
+}
